@@ -1,13 +1,13 @@
 using System;
 using System.Collections.Generic;
 
-// Define the product interface
+// Определение интерфейса
 interface IProduct
 {
     void Display();
 }
 
-// Define the concrete products
+// Определение конкретных продуктов
 class Sandwich : IProduct
 {
     private List<string> ingredients;
@@ -32,7 +32,7 @@ class Sandwich : IProduct
     }
 }
 
-// Define the creator abstract class
+// Определение абстрактного класса создателя
 abstract class SandwichCreator
 {
     public abstract Sandwich CreateSandwich();
