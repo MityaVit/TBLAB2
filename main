@@ -1,0 +1,216 @@
+using System;
+using System.Collections.Generic;
+
+// Define the product interface
+interface IProduct
+{
+    void Display();
+}
+
+// Define the concrete products
+class Sandwich : IProduct
+{
+    private List<string> ingredients;
+
+    public Sandwich()
+    {
+        ingredients = new List<string>();
+    }
+
+    public void AddIngredient(string ingredient)
+    {
+        ingredients.Add(ingredient);
+    }
+
+    public void Display()
+    {
+        Console.WriteLine("Ваш сэндвич будет состоять из:");
+        foreach (string ingredient in ingredients)
+        {
+            Console.WriteLine(ingredient);
+        }
+    }
+}
+
+// Define the creator abstract class
+abstract class SandwichCreator
+{
+    public abstract Sandwich CreateSandwich();
+}
+
+// Define the concrete creator class
+class CustomSandwichCreator : SandwichCreator
+{
+    private List<string> breads = new List<string> { "Белый хлеб", "Пшеничный хлеб", "Хлеб на закваске", "Ржаной хлеб" };
+    private List<string> meats = new List<string> { "Ветчина", "Индейка", "Ростбиф", "Салями" };
+    private List<string> cheeses = new List<string> { "Чеддер", "Грюйер", "Проволоне", "Тильзитер" };
+    private List<string> vegetables = new List<string> { "Салат-латук", "Томат", "Лук", "Огурец" };
+    private List<string> sauces = new List<string> { "Майонез", "Горчица", "Кетчуп", "Ранчо" };
+
+    public override Sandwich CreateSandwich()
+    {
+        Sandwich sandwich = new Sandwich();
+        bool addingIngredients = true;
+
+        while (addingIngredients)
+        {
+            Console.WriteLine("Выберите ингредиенты для сэндвича:");
+            Console.WriteLine("1. Хлеб");
+            Console.WriteLine("2. Мясо");
+            Console.WriteLine("3. Сыр");
+            Console.WriteLine("4. Овощи");
+            Console.WriteLine("5. Соусы");
+            Console.WriteLine("6. Завершить");
+
+            string input = Console.ReadLine();
+            if (int.TryParse(input, out int choice))
+            {
+                switch (choice)
+                {
+                    case 1:
+                        Console.WriteLine("Пожалуйста, выберите тип хлеба:");
+                        for (int i = 0; i < breads.Count; i++)
+                        {
+                            Console.WriteLine($"{i + 1}. {breads[i]}");
+                        }
+                        input = Console.ReadLine();
+                        if (int.TryParse(input, out int breadChoice) && breadChoice >= 1 && breadChoice <= breads.Count)
+                        {
+                            sandwich.AddIngredient(breads[breadChoice - 1]);
+                        }
+                        else
+                        {
+                            Console.WriteLine("Некорректный выбор");
+                        }
+                        break;
+                    case 2:
+                        Console.WriteLine("Пожалуйста, выберите тип мяса:");
+                        for (int i = 0; i < meats.Count; i++)
+                        {
+                            Console.WriteLine($"{i + 1}. {meats[i]}");
+                        }
+                        input = Console.ReadLine();
+                        if (int.TryParse(input, out int meatChoice) && meatChoice >= 1 && meatChoice <= meats.Count)
+                        {
+                            sandwich.AddIngredient(meats[meatChoice - 1]);
+                        }
+                        else
+                        {
+                            Console.WriteLine("Некорректный выбор");
+                        }
+                        break;
+                    case 3:
+                        Console.WriteLine("Пожалуйста, выберите тип сыра:");
+                        for (int i = 0; i < cheeses.Count; i++)
+                        {
+                            Console.WriteLine($"{i + 1}. {cheeses[i]}");
+                        }
+                        input = Console.ReadLine();
+                        if (int.TryParse(input, out int cheeseChoice) && cheeseChoice <= cheeses.Count)
+                        {
+                            sandwich.AddIngredient(cheeses[cheeseChoice - 1]);
+                        }
+                        else
+                        {
+                            Console.WriteLine("Некорректный выбор");
+                        }
+                        break;
+                    case 4:
+                        Console.WriteLine("Пожалуйста, выберите тип овоща:");
+                        for (int i = 0; i < vegetables.Count; i++)
+                        {
+                            Console.WriteLine($"{i + 1}. {vegetables[i]}");
+                        }
+                        input = Console.ReadLine();
+                        if (int.TryParse(input, out int veggieChoice) && veggieChoice >= 1 && veggieChoice <= vegetables.Count)
+                        {
+                            sandwich.AddIngredient(vegetables[veggieChoice - 1]);
+                        }
+                        else
+                        {
+                            Console.WriteLine("Некорректный выбор");
+                        }
+                        break;
+                    case 5:
+                        Console.WriteLine("Пожалуйста, выберите тип соуса:");
+                        for (int i = 0; i < sauces.Count; i++)
+                        {
+                            Console.WriteLine($"{i + 1}. {sauces[i]}");
+                        }
+                        input = Console.ReadLine();
+                        if (int.TryParse(input, out int sauceChoice) && sauceChoice >= 1 && sauceChoice <= sauces.Count)
+                        {
+                            sandwich.AddIngredient(sauces[sauceChoice - 1]);
+                        }
+                        else
+                        {
+                            Console.WriteLine("Некорректный выбор соуса");
+                        }
+                        break;
+                    case 6:
+                        addingIngredients = false;
+                        break;
+                    default:
+                        Console.WriteLine("Некорректный выбор");
+                        break;
+                }
+            }
+            else
+            {
+                Console.WriteLine("Так не пойдёт");
+            }
+        }
+        return sandwich;
+    }
+}
+
+class SandwichClient
+{
+    private SandwichCreator sandwichCreator;
+    public SandwichClient(SandwichCreator sandwichCreator)
+    {
+        this.sandwichCreator = sandwichCreator;
+    }
+
+    public void MakeSandwich()
+    {
+        Sandwich sandwich = sandwichCreator.CreateSandwich();
+        sandwich.Display();
+
+        bool confirm = false;
+        while (!confirm)
+        {
+            Console.WriteLine("Нажмите 1, чтобы подтвердить заказ. Нажмите 2, чтобы отменить.");
+            string input = Console.ReadLine();
+            if (int.TryParse(input, out int choice))
+            {
+                switch (choice)
+                {
+                    case 1:
+                        Console.WriteLine("Спасибо за заказ!");
+                        confirm = true;
+                        break;
+                    case 2:
+                        Console.WriteLine("Отмена заказа");
+                        return;
+                    default:
+                        Console.WriteLine("Некорректный выбор");
+                        break;
+                }
+            }
+            else
+            {
+                Console.WriteLine("Так не пойдёт");
+            }
+        }
+    }
+}
+
+class Program
+{
+    static void Main(string[] args)
+    {
+        SandwichClient sandwichClient = new SandwichClient(new CustomSandwichCreator());
+        sandwichClient.MakeSandwich();
+    }
+}
