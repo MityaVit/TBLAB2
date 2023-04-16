@@ -38,7 +38,7 @@ abstract class SandwichCreator
     public abstract Sandwich CreateSandwich();
 }
 
-// Define the concrete creator class
+// Определение класса, отвечающего за создание определённого сэндвича
 class CustomSandwichCreator : SandwichCreator
 {
     private List<string> breads = new List<string> { "Белый хлеб", "Пшеничный хлеб", "Хлеб на закваске", "Ржаной хлеб" };
