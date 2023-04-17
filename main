@@ -25,7 +25,7 @@ class Product : IProduct
 
     public void Display()
     {
-        Console.WriteLine("Ваш сэндвич будет состоять из:");
+        Console.WriteLine("Вы выбрали следующие ингредиенты:");
         foreach (string ingredient in ingredients)
         {
             Console.WriteLine(ingredient);
