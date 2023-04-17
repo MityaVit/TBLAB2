@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Security.AccessControl;
 
 // Определение интерфейса
 interface IProduct
@@ -8,11 +9,11 @@ interface IProduct
 }
 
 // Определение конкретных продуктов
-class Sandwich : IProduct
+class Product : IProduct
 {
     private List<string> ingredients;
 
-    public Sandwich()
+    public Product()
     {
         ingredients = new List<string>();
     }
@@ -33,13 +34,129 @@ class Sandwich : IProduct
 }
 
 // Определение абстрактного класса создателя
-abstract class SandwichCreator
+abstract class ProductCreator
 {
-    public abstract Sandwich CreateSandwich();
+    public abstract Product CreateProduct();
 }
 
-// Определение класса, отвечающего за создание определённого сэндвича
-class CustomSandwichCreator : SandwichCreator
+// Определение классов concrete creator
+class CustomBurgerCreator : ProductCreator
+{
+    private List<string> breads = new List<string>() { "Белая булочка", "Пшеничная булочка", "Диетическая булочка", "Ржаная булочка" };
+    private List<string> meats = new List<string> { "Ветчина", "Говядина", "Куриный бифштекс" };
+    private List<string> veggies = new List<string> { "Редис", "Томат", "Огурец", "Картошка фри" };
+    private List<string> sauces = new List<string> { "1000 островов", "Острый африканский", "ПВА" };
+
+    public override Product CreateProduct()
+    {
+        Product burger = new Product();
+        bool addingIngredients = true;
+
+        while (addingIngredients)
+        {
+            Console.WriteLine("Выберите ингредиенты для бургера:");
+            Console.WriteLine("1. Булочки");
+            Console.WriteLine("2. Мясо");
+            Console.WriteLine("3. Овощи");
+            Console.WriteLine("4. Соусы");
+            Console.WriteLine("5. Завершить");
+            string input = Console.ReadLine();
+            if (int.TryParse(input, out int choice))
+            {
+                switch (choice)
+                {
+                    case 1:
+                        Console.WriteLine("Пожалуйста, выберите тип булочки:");
+                        for (int i = 0; i < breads.Count; i++)
+                        {
+                            Console.WriteLine($"{i + 1}. {breads[i]}");
+                        }
+                        input = Console.ReadLine();
+                        if (int.TryParse(input, out int breadChoice) && breadChoice >= 1 && breadChoice <= breads.Count)
+                        {
+                            burger.AddIngredient(breads[breadChoice - 1]);
+                        }
+                        else
+                        {
+                            Console.WriteLine("Некорректный выбор");
+                        }
+                        break;
+
+                    case 2:
+                        Console.WriteLine("Пожалуйста, выберите тип мяса:");
+                        for (int i = 0; i < meats.Count; i++)
+                        {
+                            Console.WriteLine($"{i + 1}. {meats[i]}");
+                        }
+                        input = Console.ReadLine();
+                        if (int.TryParse(input, out int meatChoice) && meatChoice >= 1 && meatChoice <= meats.Count)
+                        {
+                            burger.AddIngredient(meats[meatChoice - 1]);
+                        }
+                        else
+                        {
+                            Console.WriteLine("Некорректный выбор");
+                        }
+                        break;
+
+                    case 3:
+                        Console.WriteLine("Пожалуйста, выберите тип овоща:");
+                        for (int i = 0; i < veggies.Count; i++)
+                        {
+                            Console.WriteLine($"{i + 1}. {veggies[i]}");
+                        }
+                        input = Console.ReadLine();
+                        if (int.TryParse(input, out int veggieChoice) && veggieChoice >= 1 && veggieChoice <= veggies.Count)
+                        {
+                            burger.AddIngredient(veggies[veggieChoice - 1]);
+                        }
+                        else
+                        {
+                            Console.WriteLine("Некорректный выбор");
+                        }
+                        break;
+
+                    case 4:
+                        Console.WriteLine("Пожалуйста, выберите тип соуса:");
+                        for (int i = 0; i < sauces.Count; i++)
+                        {
+                            Console.WriteLine($"{i + 1}. {sauces[i]}");
+                        }
+                        input = Console.ReadLine();
+                        if (int.TryParse(input, out int sauceChoice) && sauceChoice >= 1 && sauceChoice <= sauces.Count)
+                        {
+                            burger.AddIngredient(sauces[sauceChoice - 1]);
+                        }
+                        else
+                        {
+                            Console.WriteLine("Некорректный выбор соуса");
+                        }
+                        break;
+
+                    case 5:
+                        addingIngredients = false;
+                        break;
+
+                    default:
+                        Console.WriteLine("Некорректный выбор");
+                        break;
+
+                }
+            }
+            else
+            {
+                Console.WriteLine("Так не пойдёт");
+            }
+        }
+        return burger;
+    }
+}
+
+
+
+
+
+    class CustomSandwichCreator : ProductCreator
 {
     private List<string> breads = new List<string> { "Белый хлеб", "Пшеничный хлеб", "Хлеб на закваске", "Ржаной хлеб" };
     private List<string> meats = new List<string> { "Ветчина", "Индейка", "Ростбиф", "Салями" };
@@ -47,9 +164,9 @@ class CustomSandwichCreator : SandwichCreator
     private List<string> vegetables = new List<string> { "Салат-латук", "Томат", "Лук", "Огурец" };
     private List<string> sauces = new List<string> { "Майонез", "Горчица", "Кетчуп", "Ранчо" };
 
-    public override Sandwich CreateSandwich()
+    public override Product CreateProduct()
     {
-        Sandwich sandwich = new Sandwich();
+        Product sandwich = new Product();
         bool addingIngredients = true;
 
         while (addingIngredients)
@@ -164,18 +281,18 @@ class CustomSandwichCreator : SandwichCreator
     }
 }
 
-class SandwichClient
+class Client
 {
-    private SandwichCreator sandwichCreator;
-    public SandwichClient(SandwichCreator sandwichCreator)
+    private ProductCreator productCreator;
+    public Client(ProductCreator productCreator)
     {
-        this.sandwichCreator = sandwichCreator;
+        this.productCreator = productCreator;
     }
 
-    public void MakeSandwich()
+    public void ArrangeProduct()
     {
-        Sandwich sandwich = sandwichCreator.CreateSandwich();
-        sandwich.Display();
+        Product food = productCreator.CreateProduct();
+        food.Display();
 
         bool confirm = false;
         while (!confirm)
@@ -210,7 +327,24 @@ class Program
 {
     static void Main(string[] args)
     {
-        SandwichClient sandwichClient = new SandwichClient(new CustomSandwichCreator());
-        sandwichClient.MakeSandwich();
+        Client sandwichClient = new Client(new CustomSandwichCreator());
+        Client burgerClient = new Client(new CustomBurgerCreator());
+        Console.WriteLine("Если заказываем сэндвич - 1, если бургер - 2");
+        string userinput = Console.ReadLine();
+        if (int.TryParse(userinput, out int userchoice)){
+            switch (userchoice)
+            {
+                case 1:
+                    sandwichClient.ArrangeProduct();
+                    break;
+                case 2:
+                    burgerClient.ArrangeProduct();
+                    break;
+            }
+        }
+        else
+        {
+            Console.WriteLine("Так не пойдёт!");
+        }
     }
 }
